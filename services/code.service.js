@@ -25,6 +25,25 @@ const { generate } = require('@builder.io/sqlgenerate')
 const parser = require('sqlite-parser')
 const crypto = require('crypto')
 
+function compileAndRun(code, language) {
+    // Fetch language-specific configuration
+    const config = LANGUAGES_CONFIG[language];
+
+    if (!config) {
+        throw new Error(`Language ${language} is not supported.`);
+    }
+
+    // Implement logic for each supported language
+    switch (language) {
+        case 'go':
+            return compileGo(code, config);
+        case 'rust':
+            return compileRust(code, config);
+        default:
+            throw new Error(`Language ${language} is not supported.`);
+    }
+}
+
 const _runScript = async (cmd, res, runMemoryCheck = false) => {
     let initialMemory = 0
     let memoryCheckInterval
